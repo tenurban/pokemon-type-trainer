@@ -1,0 +1,80 @@
+/* Press Start 2P pixel font – inlined WOFF2 (≈ 23 KB) */
+@font-face {
+  font-family: "Press Start 2P";
+  src: url("data:font/woff2;base64,d09GMgABAAAAAA...<truncated_for_brevity>...") format("woff2");
+  font-display: swap;
+}
+
+/* ---- FireRed / LeafGreen palette ---- */
+:root {
+  --bg-light: #f8f8f8;
+  --bg-dark: #d8d8d8;
+  --panel: #f0e8c0;
+  --border: #7c7c7c;
+  --text: #303030;
+  --green-1: #98c6a2;
+  --green-2: #6da47e;
+  --red: #c05050;
+}
+
+/* Reset */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Layout */
+body {
+  background: var(--bg-light);
+  font-family: "Press Start 2P", monospace;
+  letter-spacing: -0.5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.battle-screen {
+  position: relative;
+  width: 240px;  /* GBA native */
+  height: 160px;
+  image-rendering: pixelated;
+  transform: scale(3); /* desktop upscale */
+  border: 4px solid var(--border);
+  background: var(--bg-dark);
+}
+
+#scene-canvas { width: 100%; height: 100%; }
+
+.textbox {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  min-height: 40px;
+  padding: 4px;
+  background: var(--panel);
+  border-top: 2px solid var(--border);
+  font-size: 6px;
+  line-height: 7px;
+  color: var(--text);
+}
+
+.choice-grid {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.choice-btn {
+  flex: 0 0 33.333%;
+  height: 50%;
+  border: 1px solid transparent;
+}
+
+.choice-btn.weak { outline: 2px dashed var(--red); }
+.choice-btn:hover { background: var(--green-1); cursor: pointer; }
+
+.hp-bar { height: 4px; background: var(--green-2); }
+
+.hidden { display: none !important; }
