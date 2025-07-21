@@ -7,111 +7,104 @@ import {
 import { storeSession, saveMastery } from "./storage.js";
 
 /* ---------- constants ---------- */
-const TYPES = [
+const TYPES=[
   "normal","fire","water","electric","grass","ice","fighting","poison","ground",
   "flying","psychic","bug","rock","ghost","dragon","dark","steel","fairy"
 ];
-const SPRITE_URL = id =>
-  `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
-const badge = t => `<span class="type-badge" type="${t}">${t}</span>`;
+const SPRITE=id=>`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+const pill=t=>`<span class="type-badge" type="${t}">${t}</span>`;
 
-/* ---------- helpers (hoisted functions) ---------- */
-function bestMultiplier(att, def){
-  let best = 1;
-  att.types.forEach(a =>
-    def.types.forEach(d => {
-      const m = TYPE_CHART[TYPES.indexOf(a)][TYPES.indexOf(d)];
-      if(m > best) best = m;
-    })
-  );
+/* ---------- helpers ---------- */
+function cap(str){
+  return str.split(/[- ]/).map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(" ");
+}
+function bestMult(att,def){
+  let best=1;
+  att.types.forEach(a=>def.types.forEach(d=>{
+    const m=TYPE_CHART[TYPES.indexOf(a)][TYPES.indexOf(d)];
+    if(m>best) best=m;
+  }));
   return best;
 }
-function isSuperEffective(a,b){ return bestMultiplier(a,b) >= 2; }
-function bestCounter(op){ return POKEMON.find(p => isSuperEffective(p,op)); }
+const superEff =(a,b)=>bestMult(a,b)>=2;
+const bestCounter=op=>POKEMON.find(p=>superEff(p,op));
 
 /* ---------- state ---------- */
-const app = document.getElementById("app");
-let opponent, choices;
-
-/* ---------- flow ---------- */
+const app=document.getElementById("app");
+let opponent,choices;
 nextBattle();
 
+/* ---------- main cycle ---------- */
 function nextBattle(){
-  app.innerHTML = "";
+  app.innerHTML="";
   opponent = pickOpponent();
   choices  = pickChoices(opponent);
-  renderScene();
+  drawScene();
 }
 
 function pickOpponent(){
-  const weakType = weightedRandomType();
-  const pool = POKEMON.filter(p => p.types.includes(weakType));
+  const weak=weightedRandomType();
+  const pool=POKEMON.filter(p=>p.types.includes(weak));
   return pool[Math.floor(Math.random()*pool.length)];
 }
-
 function pickChoices(op){
   const arr=[];
   while(arr.length<6){
-    const p = POKEMON[Math.floor(Math.random()*POKEMON.length)];
+    const p=POKEMON[Math.floor(Math.random()*POKEMON.length)];
     if(!arr.includes(p)) arr.push(p);
   }
-  if(!arr.some(c => isSuperEffective(c, op))) arr[0] = bestCounter(op);
+  if(!arr.some(c=>superEff(c,op))) arr[0]=bestCounter(op);
   return arr;
 }
 
 /* ---------- render ---------- */
-function renderScene(){
+function drawScene(){
   /* Opponent */
   app.insertAdjacentHTML("beforeend",`
     <div class="opponent">
-      <img src="${SPRITE_URL(opponent.id)}" alt="${opponent.name}">
-      <div>${opponent.name}</div>
-      <div class="types">${opponent.types.map(badge).join("")}</div>
+      <img src="${SPRITE(opponent.id)}" alt="${cap(opponent.name)}">
+      <div><b>${cap(opponent.name)}</b></div>
+      <div class="types">${opponent.types.map(pill).join("")}</div>
     </div>`);
 
-  /* Choices */
-  const grid = document.createElement("div");
-  grid.className = "choice-grid";
+  /* Choices grid */
+  const grid=document.createElement("div");grid.className="choice-grid";
   choices.forEach((p,i)=>{
     grid.insertAdjacentHTML("beforeend",`
       <button class="choice-btn">
-        <img src="${SPRITE_URL(p.id)}" alt="${p.name}">
-        <div class="poke-name">${p.name}</div>
-        <div class="types">${p.types.map(badge).join("")}</div>
+        <img src="${SPRITE(p.id)}" alt="${cap(p.name)}">
+        <div class="poke-name"><b>${cap(p.name)}</b></div>
+        <div class="types">${p.types.map(pill).join("")}</div>
       </button>`);
   });
   grid.querySelectorAll("button").forEach((btn,idx)=>
-    btn.onclick = () => handlePick(idx,btn)
+    btn.onclick=()=>onPick(idx,btn)
   );
   app.appendChild(grid);
 
   /* Textbox */
   app.insertAdjacentHTML("beforeend",
-    `<div class="textbox" id="feedback">Choose the best Pokémon to counter!</div>`);
+    `<div class="textbox" id="fb">Choose the best Pokémon to counter!</div>`);
 }
 
 /* ---------- interaction ---------- */
-function handlePick(idx, btn){
+function onPick(idx,btn){
   disableAll();
-  const chosen   = choices[idx];
-  const mult     = bestMultiplier(chosen, opponent);
-  const bestMult = Math.max(...choices.map(c=>bestMultiplier(c,opponent)));
-  const correct  = mult === bestMult;
+  const pick=choices[idx];
+  const mult=bestMult(pick,opponent);
+  const correct = mult===Math.max(...choices.map(c=>bestMult(c,opponent)));
 
-  /* Feedback */
-  const fb = document.getElementById("feedback");
-  fb.innerHTML =
-    `${correct?"✅":"❌"} <b>${chosen.name}</b> vs <b>${opponent.name}</b><br>`+
+  document.getElementById("fb").innerHTML=
+    `${correct?"✅":"❌"} <b>${cap(pick.name)}</b> vs <b>${cap(opponent.name)}</b><br>`+
     `×${mult} against ${opponent.types.join("/").toUpperCase()} – `+
-    explain(chosen.types,opponent.types,mult);
+    explain(pick.types,opponent.types,mult);
 
-  btn.style.outline = `2px solid ${correct ? "#4caf50" : "#c62828"}`;
+  btn.style.outline=`2px solid ${correct?"#4caf50":"#c62828"}`;
 
-  /* Adaptation & persistence */
-  updateMastery(chosen.types,opponent.types,correct);
-  scheduleReview({attacker:chosen.name,defender:opponent.name},correct);
+  updateMastery(pick.types,opponent.types,correct);
+  scheduleReview({attacker:pick.name,defender:opponent.name},correct);
   storeSession({
-    date:Date.now(),pick:chosen.name,pickTypes:chosen.types,
+    date:Date.now(),pick:pick.name,pickTypes:pick.types,
     opponent:opponent.name,opponentTypes:opponent.types,
     correct,multiplier:mult
   });
