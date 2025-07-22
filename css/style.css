@@ -7,8 +7,8 @@
 :root{
   --border:#7c7c7c;  --panel:#efe6b0;  --hover:#e4ead1;  --bg:#f8f8f8;  --text:#303030;
   --type-fire:#f08030; --type-water:#6890f0; --type-grass:#78c850; --type-electric:#f8d030;
-  --type-ice:#98d8d8;  --type-rock:#b8a038; --type-ground:#e0c068; --type-bug:#a8b820;
-  --type-dragon:#7038f8;--type-dark:#705848;--type-psychic:#f85888;--type-normal:#a8a878;
+  --type-ice:#98d8d8;  --type-rock:#b8a038;  --type-ground:#e0c068; --type-bug:#a8b820;
+  --type-dragon:#7038f8;--type-dark:#705848; --type-psychic:#f85888;--type-normal:#a8a878;
   --type-fairy:#ee99ac; --type-poison:#a040a0;--type-fighting:#c03028;--type-ghost:#705898;
   --type-steel:#b8b8d0; --type-flying:#a890f0;
 }
@@ -25,14 +25,11 @@ body{
   image-rendering:pixelated;overflow:hidden;
 }
 
-/* Opponent (top-center) */
-.opponent{
-  align-self:center;text-align:center;
-  font-size:1.1vmax;line-height:1.3vmax;
-}
+/* Opponent (top-centre) */
+.opponent{align-self:center;text-align:center}
 .opponent img{width:22vmin;max-width:140px;height:auto}
 
-/* Choice grid – auto responsive 3×2 */
+/* Choice grid – responsive 3 × 2 */
 .choice-grid{
   flex:1;display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:auto;
   gap:4vh 1vw;justify-items:center;
@@ -44,13 +41,19 @@ body{
 .choice-btn img{width:13vmin;max-width:110px;height:auto}
 .choice-btn:hover{background:var(--hover)}
 .choice-btn:disabled{opacity:.45}
-.poke-name{font-weight:bold;font-size:1.15vmax;text-transform:capitalize;margin-top:-0.6vh}
 
-/* Type pills under name */
+/* Unified name style for ALL Pokémon (opponent + choices) */
+.poke-name{
+  font-weight:700;font-size:1.15vmax;
+  text-transform:capitalize;margin-top:-0.6vh;
+}
+
+/* Type badges – perfectly centred text */
 .types{display:flex;gap:0.6vmin;flex-wrap:wrap;justify-content:center}
 .type-badge{
-  padding:0 0.9vmin;border-radius:0.45vmin;
-  font-size:0.9vmax;line-height:1.1vmax;font-weight:bold;color:#fff;text-transform:uppercase;
+  display:inline-flex;align-items:center;justify-content:center;
+  height:1.35vmax;padding:0 0.9vmin;border-radius:0.45vmin;
+  font-size:0.9vmax;font-weight:700;color:#fff;text-transform:uppercase;
 }
 [type="fire"]{background:var(--type-fire)}   [type="water"]{background:var(--type-water)}
 [type="grass"]{background:var(--type-grass)} [type="electric"]{background:var(--type-electric)}
@@ -62,7 +65,7 @@ body{
 [type="fighting"]{background:var(--type-fighting)}[type="ghost"]{background:var(--type-ghost)}
 [type="steel"]{background:var(--type-steel)}   [type="flying"]{background:var(--type-flying)}
 
-/* Textbox sticks to bottom; min-height keeps it visible */
+/* Textbox */
 .textbox{
   min-height:16vh;background:var(--panel);border-top:3px solid var(--border);
   font-size:1.2vmax;line-height:1.4vmax;color:var(--text);
