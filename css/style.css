@@ -1,10 +1,4 @@
 /* ───────────────── PIXEL FONT & COLOURS ───────────────── */
-@font-face{
-  font-family:"Press Start 2P";
-  src:url("https://cdn.jsdelivr.net/npm/press-start-2p@1.0.2/dist/PressStart2P-Regular.woff2")
-      format("woff2");
-  font-display:swap;
-}
 :root{
   --border:#7c7c7c;  --panel:#efe6b0;  --hover:#e4ead1;  --bg:#f8f8f8;  --text:#303030;
   --type-fire:#f08030; --type-water:#6890f0; --type-grass:#78c850; --type-electric:#f8d030;
@@ -19,43 +13,40 @@ body{
   display:flex;justify-content:center;align-items:center;min-height:100vh;
 }
 
-/* ─────────────── Responsive battle board ─────────────── */
+/* ─────────────── Battle board ─────────────── */
 .battle-screen{
   width:min(95vw,720px);border:6px solid var(--border);background:#fff;
   padding:2vw 2vw 0;display:flex;flex-direction:column;gap:2vh;
   image-rendering:pixelated;overflow:hidden;
 }
 
-/* Opponent (top-centre) */
+/* Opponent (large) */
 .opponent{align-self:center;text-align:center}
-.opponent img{width:22vmin;max-width:140px;height:auto}
+.opponent img{width:20vmin;max-width:140px;height:auto}
+.opponent .poke-name{font-size:1.1vmax;font-weight:700;margin:1vh 0 0.8vh}
 
-/* Choice grid – responsive 3 × 2 */
+/* Choice grid (smaller) */
 .choice-grid{
-  flex:1;display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:auto;
-  gap:4vh 1vw;justify-items:center;
+  flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:3.5vh 1vw;justify-items:center;
 }
 .choice-btn{
   border:none;background:transparent;cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;gap:1vh;
+  display:flex;flex-direction:column;align-items:center;gap:0.8vh;
+  font-family:"Press Start 2P",monospace;
 }
-.choice-btn img{width:13vmin;max-width:110px;height:auto}
+.choice-btn img{width:11vmin;max-width:95px;height:auto}
 .choice-btn:hover{background:var(--hover)}
 .choice-btn:disabled{opacity:.45}
+.poke-name{font-size:0.9vmax;font-weight:700;text-transform:capitalize;margin-top:-0.4vh}
 
-/* Unified name style for ALL Pokémon (opponent + choices) */
-.poke-name{
-  font-weight:700;font-size:1.15vmax;
-  text-transform:capitalize;margin-top:-0.6vh;
-}
-
-/* Type badges – perfectly centred text */
-.types{display:flex;gap:0.6vmin;flex-wrap:wrap;justify-content:center}
+/* Type pills */
+.types{display:flex;gap:0.5vmin;flex-wrap:wrap;justify-content:center}
 .type-badge{
   display:inline-flex;align-items:center;justify-content:center;
-  height:1.35vmax;padding:0 0.9vmin;border-radius:0.45vmin;
-  font-size:0.9vmax;font-weight:700;color:#fff;text-transform:uppercase;
+  height:1.15vmax;padding:0 0.8vmin;border-radius:0.4vmin;
+  font-size:0.75vmax;font-weight:700;color:#fff;text-transform:uppercase;
 }
+/* --- colours (unchanged) --- */
 [type="fire"]{background:var(--type-fire)}   [type="water"]{background:var(--type-water)}
 [type="grass"]{background:var(--type-grass)} [type="electric"]{background:var(--type-electric)}
 [type="ice"]{background:var(--type-ice)}     [type="rock"]{background:var(--type-rock)}
@@ -69,11 +60,11 @@ body{
 /* Textbox */
 .textbox{
   min-height:16vh;background:var(--panel);border-top:3px solid var(--border);
-  font-size:1.2vmax;line-height:1.4vmax;color:var(--text);
-  display:flex;flex-direction:column;gap:1.4vmax;justify-content:flex-start;
-  padding:1.6vmax 2vmax;
+  font-size:1.1vmax;line-height:1.35vmax;color:var(--text);
+  display:flex;flex-direction:column;gap:1.3vmax;justify-content:flex-start;
+  padding:1.5vmax 2vmax;
 }
 .next-btn{
   align-self:flex-end;background:#fff;border:3px solid var(--border);
-  padding:0.7vmax 2.4vmax;font-size:1.05vmax;cursor:pointer;
+  padding:0.6vmax 2.3vmax;font-size:1vmax;cursor:pointer;
 }
