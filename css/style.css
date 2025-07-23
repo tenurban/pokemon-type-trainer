@@ -1,70 +1,67 @@
-/* Pixel font */
+/* Pixel font ********************************************************** */
 @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 
-/* Colours */
+/* Palette & layout tokens ********************************************* */
 :root{
   --border:#7c7c7c; --panel:#efe6b0; --hover:#e4ead1; --bg:#f8f8f8; --text:#303030;
+
   --type-fire:#f08030; --type-water:#6890f0; --type-grass:#78c850; --type-electric:#f8d030;
-  --type-ice:#98d8d8;  --type-rock:#b8a038;  --type-ground:#e0c068; --type-bug:#a8b820;
+  --type-ice:#98d8d8;  --type-rock:#b8a038; --type-ground:#e0c068; --type-bug:#a8b820;
   --type-dragon:#7038f8;--type-dark:#705848; --type-psychic:#f85888;--type-normal:#a8a878;
   --type-fairy:#ee99ac; --type-poison:#a040a0;--type-fighting:#c03028;--type-ghost:#705898;
-  --type-steel:#b8b8d0; --type-flying:#a890f0;
+  --type-steel:#b8b8d0;--type-flying:#a890f0;
+
+  --gridH:66.667vw;            /* two rows of squares            */
+  --textboxMin:8vh;            /* never smaller than 8 vh         */
+  --textboxMax:30vh;           /* never larger than 30 vh         */
+
+  --name-phone:3.9vw;
+  --name-phone-smaller:3.3vw;  /* super-short screens             */
+  --name-desk :1.05vmax;
 }
 
-/* Reset */
+/* Reset *************************************************************** */
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{background:var(--bg);font-family:"Press Start 2P",monospace}
 
-/* ========== BOARD (mobile first) ========== */
+/* =========================== BOARD ================================== */
 .battle-screen{
-  width:100vw;height:100vh;box-sizing:border-box;
+  width:100vw;height:100vh;border:2px solid var(--border);
   display:grid;
-  grid-template-rows:32% 38% 1fr;     /* opponent | 3×2 grid | textbox */
-  border:2px solid var(--border);overflow:hidden;
-  image-rendering:pixelated;
+  grid-template-rows: auto var(--gridH) minmax(var(--textboxMin), var(--textboxMax));
+  /* opponent | grid | textbox (limited) */
+  overflow:hidden;image-rendering:pixelated;
 }
 
-/* ── Band 1: Opponent ───────────────────── */
-.opponent{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  border-bottom:1px solid var(--border);padding:1vh 0;
-}
-.opponent img{
-  max-height:80%;max-width:80%;height:auto;width:auto;
-}
-.opponent .poke-name{
-  font-size:4.1vw;font-weight:700;margin:1vw 0 .7vw;text-transform:capitalize;
-}
-
-/* ── Band 2: 3×2 grid ───────────────────── */
-.choice-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);
-}
+/* ---------- band 2 – fixed 3 × 2 grid ------------------------------- */
+.choice-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:1fr;width:100%;height:100%}
 .choice-btn{
-  border:none;
-  border-right:1px solid var(--border);border-bottom:1px solid var(--border);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:1.3vw;cursor:pointer;background:#fff;
+  border:none;border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+  background:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:1.5vw;aspect-ratio:1/1;
 }
-.choice-btn:nth-child(3n){border-right:none} /* last column */
+.choice-btn:nth-child(3n){border-right:none}
+.choice-btn:nth-last-child(-n+3){border-bottom:none}
 .choice-btn:hover{background:var(--hover)}
 .choice-btn:disabled{opacity:.4}
-.choice-btn img{
-  width:60%;max-width:95px;height:auto;
-}
+.choice-btn img{max-width:72%;max-height:72%;object-fit:contain}
+
 .poke-name{
-  font-size:3.4vw;font-weight:700;letter-spacing:-.16vw;margin:-.4vw 0 .7vw;
-  text-transform:capitalize;max-width:95%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  font-size:var(--name-phone);font-weight:700;letter-spacing:-.12vw;
+  max-width:90%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  text-transform:capitalize;margin:-.5vw 0 .8vw
 }
 
-/* Badges */
-.types{display:flex;gap:1vw;margin-top:.1vw;white-space:nowrap;justify-content:center}
+/* badges (grid & opponent) */
+.types{display:flex;gap:.8vw;flex-wrap:wrap;justify-content:center;max-width:90%}
 .type-badge{
   display:inline-flex;align-items:center;justify-content:center;
-  padding:0 1.1vw;border-radius:.8vw;height:3.2vw;
-  font-size:clamp(9px,2.5vw,13px);font-weight:700;color:#fff;text-transform:uppercase;
+  height:2.8vw;padding:0 1.1vw;border-radius:.75vw;
+  font-size:clamp(7px,2.2vw,11px);font-weight:700;color:#fff;text-transform:uppercase
 }
+
+/* colour map */
 [type="fire"]{background:var(--type-fire)}   [type="water"]{background:var(--type-water)}
 [type="grass"]{background:var(--type-grass)} [type="electric"]{background:var(--type-electric)}
 [type="ice"]{background:var(--type-ice)}     [type="rock"]{background:var(--type-rock)}
@@ -75,28 +72,49 @@ body{background:var(--bg);font-family:"Press Start 2P",monospace}
 [type="fighting"]{background:var(--type-fighting)}[type="ghost"]{background:var(--type-ghost)}
 [type="steel"]{background:var(--type-steel)}   [type="flying"]{background:var(--type-flying)}
 
-/* ── Band 3: Textbox ───────────────────── */
-.textbox{
-  background:var(--panel);border-top:1px solid var(--border);
-  padding:4vw 5vw;font-size:3.7vw;line-height:4.4vw;color:var(--text);overflow:auto;
+/* ---------- band 1 – opponent (auto row) ---------------------------- */
+.opponent{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:90px;padding:1vh 0
 }
-.next-btn{
-  margin-top:4vw;align-self:flex-end;background:#fff;border:3px solid var(--border);
-  padding:2.5vw 6.5vw;font-size:3.3vw;cursor:pointer;
+.opponent img{
+  max-height:calc(100vh - var(--gridH) - var(--textboxMin) - 50px);
+  max-width:240px;width:auto;height:auto
+}
+.opponent .poke-name{
+  font-size:var(--name-phone);font-weight:700;letter-spacing:-.15vw;
+  margin:1vw 0 .6vw;text-transform:capitalize;max-width:90%;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap
 }
 
-/* ===== Desktop (≥600 px) ===== */
+/* ---------- band 3 – textbox (flex column) -------------------------- */
+.textbox{
+  background:var(--panel);border-top:1px solid var(--border);
+  padding:4vw 5vw;font-size:3.7vw;line-height:4.4vw;color:var(--text);
+  overflow:auto;display:flex;flex-direction:column
+}
+.next-btn{
+  align-self:flex-end;margin-top:4vw;background:#fff;border:3px solid var(--border);
+  padding:2.4vw 6.2vw;font-size:3.3vw;cursor:pointer
+}
+
+/* ---------- super-short screens: reduce font slightly --------------- */
+@media (max-height:540px){
+  .poke-name,
+  .opponent .poke-name{font-size:var(--name-phone-smaller)}
+  .choice-btn{gap:1vw}
+}
+
+/* ========================= desktop / tablet ========================= */
 @media(min-width:600px){
   body{display:flex;justify-content:center;align-items:center}
-  .battle-screen{
-    width:720px;height:auto;max-height:92vh;border:4px solid var(--border);
-    grid-template-rows:32% 38% 16%;
-  }
-  .opponent .poke-name{font-size:1.1vmax}
-  .opponent img{max-height:80%;max-width:200px}
-  .choice-btn img{width:80px}
-  .poke-name{font-size:.94vmax;letter-spacing:-.14vmin}
-  .type-badge{height:1.1vmax;font-size:.78vmax;padding:0 .8vmin;border-radius:.5vmin}
+  .battle-screen{width:720px;height:92vh;border:4px solid var(--border)}
+  :root{--gridH:480px}
+
+  .choice-btn img{max-width:100px}
+  .poke-name{font-size:var(--name-desk);letter-spacing:-.15vmin}
+  .opponent .poke-name{font-size:var(--name-desk);letter-spacing:-.15vmin}
+  .type-badge{height:1.1vmax;font-size:.8vmax;padding:0 .8vmin;border-radius:.55vmin}
   .textbox{font-size:1.05vmax;line-height:1.25vmax;padding:1.25vmax 2vmax}
   .next-btn{margin-top:1vmax;padding:.6vmax 2.3vmax;font-size:1.05vmax}
 }
